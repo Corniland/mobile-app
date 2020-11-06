@@ -68,6 +68,6 @@ private fun BigTitle() {
         style = CornilandTheme.typography.h2,
         color = CornilandTheme.colors.primary,
         fontWeight = FontWeight.ExtraBold,
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(16.dp, top = 48.dp)
     )
 }

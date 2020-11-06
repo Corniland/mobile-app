@@ -4,6 +4,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun CornilandTheme(
@@ -25,15 +26,14 @@ fun CornilandTheme(
 // ------
 
 private val lightColor = lightColors(
-    primary = gray800,
-    secondary = gray400,
-    background = gray50
+    primary = gray900,
+    secondary = gray700
 )
 
 private val darkColor = darkColors(
-    primary = gray200,
-    secondary = gray600,
-    background = gray900,
+    primary = gray100,
+    secondary = gray300,
+    background = gray900
 )
 
 object CornilandTheme {

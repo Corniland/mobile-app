@@ -13,9 +13,7 @@ sealed class ProjectBrowserViewState {
     class Success(val projects: List<Project>) : ProjectBrowserViewState()
 }
 
-class ProjectBrowserViewModel(
-    var repository: ProjectRepository
-) : ViewModel() {
+class ProjectBrowserViewModel(var repository: ProjectRepository) : ViewModel() {
 
     var projectRequest: MutableLiveData<ProjectBrowserViewState> =
         MutableLiveData(ProjectBrowserViewState.Loading)

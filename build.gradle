@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
 
-    ext.android_tools = '4.2.0-alpha13'
+    ext.android_tools = '4.2.0-alpha15'
     ext.kotlin_version = '1.4.10'
     ext.compose_version = "1.0.0-alpha05"
     ext.retrofit_version = "2.9.0"

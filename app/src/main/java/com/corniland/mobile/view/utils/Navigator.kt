@@ -37,6 +37,7 @@ class Navigator<T> private constructor(
     }
 
     fun navigate(destination: T) {
+        if (destination == current) { return }
         backStack += destination
         backCallback.isEnabled = canGoBack()
     }

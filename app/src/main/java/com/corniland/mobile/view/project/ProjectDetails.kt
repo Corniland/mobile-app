@@ -2,11 +2,7 @@ package com.corniland.mobile.view.project
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Box
-import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ProvideEmphasis
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.Composable
@@ -15,13 +11,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.corniland.mobile.data.model.Project
 import com.corniland.mobile.data.repository.RepositoriesAmbient
 import com.corniland.mobile.view.theme.CornilandTheme
-import com.corniland.mobile.view.theme.gray50
 import com.corniland.mobile.view.utils.*
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -32,9 +26,7 @@ fun ProjectDetails(id: String) {
     val viewModel = remember { ProjectDetailsViewModel(projectId = id, repository = repository) }
 
     val isLoading by viewModel.isLoading.observeAsState(false)
-    val state: ProjectDetailsViewState by viewModel.projectRequest.observeAsState(
-        ProjectDetailsViewState.Loading
-    )
+    val state by viewModel.projectRequest.observeAsState(ProjectDetailsViewState.Loading)
 
     SwipeToRefreshLayout(
         refreshingState = state !is ProjectDetailsViewState.Loading && isLoading, // not loading, but reloading
@@ -53,7 +45,7 @@ fun ProjectDetails(id: String) {
 @Composable
 private fun ProjectPage(project: Project) {
     ScrollableColumn {
-        HeaderImage(url = project.coverPictureUrl)
+        HeaderImage(url = project.cover_picture_url)
         CardProjectDetails(project)
     }
 }

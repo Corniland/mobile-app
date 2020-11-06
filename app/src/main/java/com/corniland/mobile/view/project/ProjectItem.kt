@@ -12,13 +12,12 @@ import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.corniland.mobile.Destination
 import com.corniland.mobile.data.model.Project
 import com.corniland.mobile.view.theme.CornilandTheme
+import com.corniland.mobile.view.utils.HorizontalRuler
 import com.corniland.mobile.view.utils.ImageLoading
 import com.corniland.mobile.view.utils.NavigatorAmbient
 import com.skydoves.landscapist.glide.GlideImage
@@ -63,7 +62,7 @@ private fun Title(project: Project) {
 @Composable
 private fun Description(project: Project) {
     Text(
-        project.shortDescription,
+        project.short_description,
         style = CornilandTheme.typography.body1,
         color = CornilandTheme.colors.primary
     )
@@ -73,7 +72,7 @@ private fun Description(project: Project) {
 private fun ProjectImage(project: Project) {
     Surface(shape = RoundedCornerShape(8.dp)) {
         GlideImage(
-            imageModel = project.coverPictureUrl,
+            imageModel = project.cover_picture_url,
             contentScale = ContentScale.Crop,
             modifier = Modifier.size(width = 112.dp, height = 64.dp),
             loading = { ImageLoading() },
@@ -111,16 +110,6 @@ private fun Details(project: Project) {
             style = CornilandTheme.typography.body2,
             color = CornilandTheme.colors.secondary
         )
-    }
-}
-
-@Composable
-fun HorizontalRuler(color: Color = CornilandTheme.colors.secondary, width: Dp = 1.dp) {
-    Surface(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-        color = color
-    ) {
-        Spacer(modifier = Modifier.height(width))
     }
 }
 
