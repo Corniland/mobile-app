@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.corniland.mobile.Destination
+import com.corniland.mobile.view.main.Destination
 import com.corniland.mobile.data.model.Project
 import com.corniland.mobile.view.theme.CornilandTheme
 import com.corniland.mobile.view.utils.HorizontalRuler

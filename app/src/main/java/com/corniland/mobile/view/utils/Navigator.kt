@@ -7,7 +7,7 @@ import androidx.compose.runtime.ProvidableAmbient
 import androidx.compose.runtime.ambientOf
 import androidx.compose.runtime.savedinstancestate.listSaver
 import androidx.compose.runtime.toMutableStateList
-import com.corniland.mobile.Destination
+import com.corniland.mobile.view.main.Destination
 
 class Navigator<T> private constructor(
     initialBackStack: List<T>,

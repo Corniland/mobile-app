@@ -1,6 +1,7 @@
 package com.corniland.mobile.view.login
 
 import android.os.Handler
+import android.os.Looper
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +26,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import com.corniland.mobile.Destination
+import com.corniland.mobile.view.main.Destination
 import com.corniland.mobile.data.repository.RepositoriesAmbient
 import com.corniland.mobile.view.theme.CornilandTheme
 import com.corniland.mobile.view.utils.NavigatorAmbient
@@ -54,7 +55,7 @@ fun Register() {
 
     if (registerState is RegisterViewState.SuccessRegister) {
         // Send the user to home once he's registered, 1sec delay to show the checkmark for the success
-        Handler().postDelayed({ navigator.navigate(Destination.Login) }, 1000)
+        Handler(Looper.getMainLooper()).postDelayed({ navigator.navigate(Destination.Login) }, 1000)
     }
 
     Column(

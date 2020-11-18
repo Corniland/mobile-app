@@ -21,19 +21,21 @@ fun CornilandTheme(
     }
 }
 
-
 // Colors
 // ------
 
 private val lightColor = lightColors(
     primary = gray900,
-    secondary = gray700
+    secondary = gray700,
+    background = gray100,
+    onSecondary = gray200,
 )
 
 private val darkColor = darkColors(
     primary = gray100,
     secondary = gray300,
-    background = gray900
+    background = gray900,
+    onSecondary = gray800,
 )
 
 object CornilandTheme {

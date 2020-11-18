@@ -10,17 +10,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableAmbient
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.ambientOf
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.corniland.mobile.Destination
+import com.corniland.mobile.data.SessionManagerAmbient
+import com.corniland.mobile.view.main.Destination
 import com.corniland.mobile.view.theme.CornilandTheme
-import com.corniland.mobile.view.utils.HorizontalRuler
 import com.corniland.mobile.view.utils.NavigatorAmbient
 
 @Composable
 fun Drawer(drawerState: DrawerState) {
+    val session = SessionManagerAmbient.current
+    val currentUser = session.state.observeAsState().value
+    val navigator = NavigatorAmbient.current
+
     Providers(DrawerStateAmbient provides drawerState) {
         Column(Modifier.padding(top = 32.dp)) {
             Column(
@@ -32,10 +37,26 @@ fun Drawer(drawerState: DrawerState) {
                     style = CornilandTheme.typography.h3,
                     modifier = Modifier.padding(bottom = 32.dp)
                 )
+
+                currentUser?.username?.let {
+                    MenuItem(destination = Destination.CurrentUserProfile) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxWidth().padding(top = 4.dp, bottom = 12.dp)
+                        ) {
+                            Text(text = it, style = CornilandTheme.typography.h4)
+                            Text(
+                                "Currently connected as",
+                                style = CornilandTheme.typography.caption
+                            )
+                        }
+                    }
+                    Spacer(Modifier.padding(bottom = 24.dp))
+                }
             }
 
             Column {
-                MenuItem("Browse", destination = Destination.ProjectBrowser)
+                MenuItem(destination = Destination.ProjectBrowser) { MenuTitle(name = "Browse") }
                 /*HorizontalRuler()
                 MenuItem("My project")
                 HorizontalRuler()
@@ -46,36 +67,65 @@ fun Drawer(drawerState: DrawerState) {
                 verticalArrangement = Arrangement.Bottom,
                 modifier = Modifier.fillMaxHeight().padding(bottom = 64.dp)
             ) {
-                MenuItem("Login", destination = Destination.Login)
+                currentUser?.let {
+                    MenuItem(onClick = {
+                        session.logout()
+                        navigator.navigate(Destination.Login)
+                    }) {
+                        MenuTitle(name = "Logout")
+                    }
+                } ?: run {
+                    MenuItem(destination = Destination.Login) { MenuTitle(name = "Login") }
+                }
             }
         }
     }
 }
 
 @Composable
-fun MenuItem(name: String, destination: Destination) {
+private fun MenuItem(destination: Destination, content: @Composable () -> Unit) {
     val navigator = NavigatorAmbient.current
+
+    MenuItem(
+        onClick = { navigator.navigate(destination) },
+        color = if (navigator.current == destination) CornilandTheme.colors.background else Color.Transparent
+    ) {
+        content()
+    }
+}
+
+@Composable
+private fun MenuItem(
+    onClick: () -> Unit,
+    color: Color = Color.Transparent,
+    content: @Composable () -> Unit
+) {
     val drawerState = DrawerStateAmbient.current
 
     Surface(
-        color = if (navigator.current == destination) CornilandTheme.colors.background else Color.Transparent,
+        color = color,
         modifier = Modifier
             .fillMaxWidth()
             .clickable(
                 indication = RippleIndication(),
                 onClick = {
-                    navigator.navigate(destination)
+                    onClick()
                     drawerState.close()
                 }
             )
     ) {
         Column(horizontalAlignment = Alignment.Start) {
-            Text(
-                text = name,
-                modifier = Modifier.padding(top = 16.dp, bottom = 16.dp, start = 32.dp, end = 16.dp)
-            )
+            content()
         }
     }
+}
+
+@Composable
+private fun MenuTitle(name: String) {
+    Text(
+        text = name,
+        modifier = Modifier.padding(top = 16.dp, bottom = 16.dp, start = 32.dp, end = 16.dp)
+    )
 }
 
 private val DrawerStateAmbient: ProvidableAmbient<DrawerState> = ambientOf()

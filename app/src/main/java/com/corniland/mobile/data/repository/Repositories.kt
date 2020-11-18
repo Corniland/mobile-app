@@ -13,10 +13,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Type
 
-data class Repositories constructor(
+data class Repositories(
     val project: ProjectRepository = ProjectRepository(),
     val user: UserRepository = UserRepository()
 ) {
+
     companion object {
         val api: CornilandAPI = {
             val retrofit = Retrofit.Builder()
@@ -30,11 +31,12 @@ data class Repositories constructor(
         }()
 
         private fun generateHttpClient(): OkHttpClient {
-           return OkHttpClient.Builder()
-               .addInterceptor(AuthInterceptor())
-               .build()
+            return OkHttpClient.Builder()
+                .addInterceptor(AuthInterceptor())
+                .build()
         }
     }
+
 }
 
 val nullOnEmptyConverterFactory = object : Converter.Factory() {
@@ -52,14 +54,12 @@ val nullOnEmptyConverterFactory = object : Converter.Factory() {
     }
 }
 
-class AuthInterceptor: Interceptor {
-
-    private val sessionManager = SessionManager()
+class AuthInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestBuilder = chain.request().newBuilder()
 
-        sessionManager.getJwt()?.let {
+        SessionManager.getJwt()?.let {
             requestBuilder.addHeader("Authorization", "Bearer $it")
         }
 

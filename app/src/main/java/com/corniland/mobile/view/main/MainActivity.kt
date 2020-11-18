@@ -1,10 +1,8 @@
-package com.corniland.mobile
+package com.corniland.mobile.view.main
 
 import android.os.Bundle
-import android.os.Parcelable
 import androidx.activity.OnBackPressedDispatcher
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
@@ -14,19 +12,25 @@ import androidx.compose.runtime.Providers
 import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.unit.dp
+import com.corniland.mobile.data.SessionManager
+import com.corniland.mobile.data.SessionManagerAmbient
 import com.corniland.mobile.data.repository.Repositories
 import com.corniland.mobile.data.repository.RepositoriesAmbient
 import com.corniland.mobile.view.Drawer
-import com.corniland.mobile.view.login.Login
-import com.corniland.mobile.view.login.Register
-import com.corniland.mobile.view.project.ProjectBrowser
-import com.corniland.mobile.view.project.ProjectDetails
 import com.corniland.mobile.view.theme.CornilandTheme
 import com.corniland.mobile.view.utils.Navigator
 import com.corniland.mobile.view.utils.NavigatorAmbient
-import kotlinx.android.parcel.Parcelize
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var repositories: Repositories
+
+    @Inject
+    lateinit var sessionManager: SessionManager
 
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +39,12 @@ class MainActivity : AppCompatActivity() {
         instance = this
 
         setContent {
-            CornilandApp(backDispatcher = onBackPressedDispatcher)
+            Providers(
+                RepositoriesAmbient provides repositories,
+                SessionManagerAmbient provides sessionManager
+            ) {
+                CornilandApp(backDispatcher = onBackPressedDispatcher)
+            }
         }
     }
 
@@ -55,7 +64,7 @@ fun CornilandApp(backDispatcher: OnBackPressedDispatcher) {
 
     val scaffoldState = rememberScaffoldState()
 
-    Providers(NavigatorAmbient provides navigator, RepositoriesAmbient provides Repositories()) {
+    Providers(NavigatorAmbient provides navigator) {
         CornilandTheme {
             Scaffold(
                 scaffoldState = scaffoldState,
@@ -67,33 +76,4 @@ fun CornilandApp(backDispatcher: OnBackPressedDispatcher) {
             )
         }
     }
-}
-
-@ExperimentalMaterialApi
-@Composable
-fun AppBody() {
-    val navigator = NavigatorAmbient.current
-    Crossfade(current = navigator.current) { destination ->
-        when (destination) {
-            is Destination.ProjectBrowser -> ProjectBrowser()
-            is Destination.ProjectDetails -> ProjectDetails(id = destination.projectId)
-            is Destination.Login -> Login()
-            is Destination.Register -> Register()
-        }
-    }
-}
-
-sealed class Destination : Parcelable {
-
-    @Parcelize
-    object ProjectBrowser : Destination()
-
-    @Parcelize
-    data class ProjectDetails(val projectId: String) : Destination()
-
-    @Parcelize
-    object Login : Destination()
-
-    @Parcelize
-    object Register: Destination()
 }

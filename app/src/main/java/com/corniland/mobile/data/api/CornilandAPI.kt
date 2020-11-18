@@ -1,14 +1,17 @@
 package com.corniland.mobile.data.api
 
-import com.corniland.mobile.data.model.LoginRequest
-import com.corniland.mobile.data.model.LoginResponse
-import com.corniland.mobile.data.model.Project
-import com.corniland.mobile.data.model.RegisterRequest
+import com.corniland.mobile.data.model.*
 import retrofit2.Response
 import retrofit2.http.*
 
 
 interface CornilandAPI {
+
+    @GET("api/users/{id}")
+    suspend fun getUser(@Path("id") id: String): Response<User>
+
+    @PUT("api/users/me")
+    suspend fun updateSettings(@Body body: UpdateSettingsRequest): Response<User>
 
     @GET("api/projects")
     suspend fun getAllProjects(): Response<List<Project>>
@@ -22,4 +25,6 @@ interface CornilandAPI {
     @POST("auth/user/register")
     suspend fun register(@Body body: RegisterRequest): Response<Unit>
 
+    @GET("auth/user/me")
+    suspend fun whoami(): Response<User>
 }

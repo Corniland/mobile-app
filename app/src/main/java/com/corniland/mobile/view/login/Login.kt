@@ -1,5 +1,7 @@
 package com.corniland.mobile.view.login
 
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
@@ -19,7 +21,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import com.corniland.mobile.Destination
+import com.corniland.mobile.data.SessionManagerAmbient
+import com.corniland.mobile.view.main.Destination
 import com.corniland.mobile.data.repository.RepositoriesAmbient
 import com.corniland.mobile.view.theme.CornilandTheme
 import com.corniland.mobile.view.utils.NavigatorAmbient
@@ -27,12 +30,21 @@ import com.corniland.mobile.view.utils.NavigatorAmbient
 @Composable
 fun Login() {
     val repository = RepositoriesAmbient.current.user
+    val sessionManager = SessionManagerAmbient.current
     val viewModel = remember { LoginViewModel(repository = repository) }
     val navigator = NavigatorAmbient.current
 
     val email = remember { mutableStateOf(TextFieldValue()) }
     val password = remember { mutableStateOf(TextFieldValue()) }
     val loginState = viewModel.state.observeAsState(LoginViewState.Idle).value
+
+    if (loginState is LoginViewState.SuccessLogin) {
+        sessionManager.updateCurrentUser()
+        Handler(Looper.getMainLooper()).postDelayed(
+            { navigator.navigate(Destination.ProjectBrowser) },
+            1000
+        )
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
