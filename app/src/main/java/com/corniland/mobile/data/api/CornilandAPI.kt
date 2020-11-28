@@ -38,6 +38,12 @@ interface CornilandAPI {
     @DELETE("api/projects/{id}")
     suspend fun deleteProject(@Path("id") id: String): Response<Unit>
 
+    @POST("api/projects/{project_id}/member/{user_id}")
+    suspend fun addUserToProject(@Path("project_id") projectId: String, @Path("user_id") userId: String): Response<Unit>
+
+    @DELETE("api/projects/{project_id}/member/{user_id}")
+    suspend fun removeUserToProject(@Path("project_id") projectId: String, @Path("user_id") userId: String): Response<Unit>
+
     // Auth
 
     @POST("auth/user/login")

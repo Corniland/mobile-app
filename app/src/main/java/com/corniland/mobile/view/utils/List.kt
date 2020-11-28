@@ -15,6 +15,20 @@ import androidx.compose.ui.unit.dp
 import com.corniland.mobile.view.theme.CornilandTheme
 
 @Composable
+fun ListItemWithArrow(
+    onClick: () -> Unit = {},
+    content: @Composable () -> Unit
+) {
+    ListItem(onClick = onClick) {
+        Row {
+            content()
+            Spacer(Modifier.weight(1f))
+            Icon(Icons.Default.KeyboardArrowRight)
+        }
+    }
+}
+
+@Composable
 fun ListItem(
     onClick: () -> Unit = {},
     content: @Composable () -> Unit
@@ -32,11 +46,7 @@ fun ListItem(
             horizontalAlignment = Alignment.Start,
             modifier = Modifier.padding(top = 16.dp, bottom = 16.dp, start = 32.dp, end = 16.dp)
         ) {
-            Row {
-                content()
-                Spacer(Modifier.weight(1f))
-                Icon(Icons.Default.KeyboardArrowRight)
-            }
+            content()
         }
     }
 }

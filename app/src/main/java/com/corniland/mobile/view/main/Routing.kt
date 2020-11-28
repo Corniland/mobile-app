@@ -6,10 +6,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import com.corniland.mobile.view.login.Login
 import com.corniland.mobile.view.login.Register
-import com.corniland.mobile.view.project.CreateProject
-import com.corniland.mobile.view.project.EditProject
-import com.corniland.mobile.view.project.ProjectBrowser
-import com.corniland.mobile.view.project.ProjectDetails
+import com.corniland.mobile.view.project.*
 import com.corniland.mobile.view.user.CurrentUserProfile
 import com.corniland.mobile.view.user.UserProfile
 import com.corniland.mobile.view.user.UserSettings
@@ -37,6 +34,7 @@ fun AppBody() {
             is Destination.UserSettings -> UserSettings()
             is Destination.CreateNewProject -> CreateProject()
             is Destination.EditProject -> EditProject(id = destination.projectId)
+            is Destination.AddRemoveUserToProjectOwned -> AddRemoveUserToProjectOwned(otherUserId = destination.otherUserId)
         }
     }
 }
@@ -47,7 +45,7 @@ sealed class Destination : Parcelable {
     data class ProjectBrowser(
         val title: String? = null,
         val byIds: List<String>? = null,
-        val byOwner: String? = null
+        val byOwner: String? = null,
     ) : Destination()
 
     @Parcelize
@@ -73,5 +71,8 @@ sealed class Destination : Parcelable {
 
     @Parcelize
     data class EditProject(val projectId: String) : Destination()
+
+    @Parcelize
+    data class AddRemoveUserToProjectOwned(val otherUserId: String) : Destination()
 
 }

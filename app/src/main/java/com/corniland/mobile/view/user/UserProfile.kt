@@ -35,21 +35,26 @@ fun CurrentUserProfile() {
     val user = session.state.observeAsState().value
 
     user?.let {
-        ProfilePage(user = user, isCurrentUser = true)
+        ProfilePage(user = user)
     } ?: run {
         Text("No user is currently logged in.")
     }
 }
 
 @Composable
-private fun ProfilePage(user: User, isCurrentUser: Boolean = false) {
+private fun ProfilePage(user: User) {
+    val currentUser = SessionManagerAmbient.current.state.observeAsState().value
+    val isCurrentUser = user.id == currentUser?.id
     val navigator = NavigatorAmbient.current
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(top = 48.dp)
     ) {
-        Text("You are", style = CornilandTheme.typography.caption)
+        Text(
+            if (isCurrentUser) "You are" else "This user is",
+            style = CornilandTheme.typography.caption
+        )
         Text(
             text = user.username,
             style = CornilandTheme.typography.h2,
@@ -58,7 +63,7 @@ private fun ProfilePage(user: User, isCurrentUser: Boolean = false) {
         )
 
         ListGroup(modifier = Modifier.padding(16.dp)) {
-            ListItem(onClick = {
+            ListItemWithArrow(onClick = {
                 navigator.navigate(
                     Destination.ProjectBrowser(
                         title = "Project owned by ${user.username}",
@@ -69,7 +74,7 @@ private fun ProfilePage(user: User, isCurrentUser: Boolean = false) {
                 Text(text = if (isCurrentUser) "My projects" else "Project of ${user.username}")
             }
 
-            ListItem(onClick = {
+            ListItemWithArrow(onClick = {
                 navigator.navigate(
                     Destination.ProjectBrowser(
                         title = "Favourite project of ${user.username}",
@@ -81,14 +86,26 @@ private fun ProfilePage(user: User, isCurrentUser: Boolean = false) {
             }
         }
 
+        if (currentUser != null && !isCurrentUser) {
+            ListGroup(modifier = Modifier.padding(16.dp)) {
+                ListItemWithArrow(onClick = {
+                    navigator.navigate(
+                        Destination.AddRemoveUserToProjectOwned(otherUserId = user.id)
+                    )
+                }) {
+                    Text("Add/Remove this user to one of my project")
+                }
+            }
+        }
+
         if (isCurrentUser) {
             Spacer(Modifier.padding(top = 24.dp))
             ListGroup(Modifier.padding(16.dp)) {
-                ListItem(onClick = { navigator.navigate(Destination.UserSettings) }) {
+                ListItemWithArrow(onClick = { navigator.navigate(Destination.UserSettings) }) {
                     Text("Edit profile")
                 }
 
-                ListItem(onClick = { navigator.navigate(Destination.CreateNewProject) }) {
+                ListItemWithArrow(onClick = { navigator.navigate(Destination.CreateNewProject) }) {
                     Text("New project")
                 }
             }

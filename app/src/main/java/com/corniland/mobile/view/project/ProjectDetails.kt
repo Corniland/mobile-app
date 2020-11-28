@@ -3,7 +3,6 @@ package com.corniland.mobile.view.project
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.shape.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -16,7 +15,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -73,7 +71,10 @@ private fun ProjectPage(project: Project, viewModel: ProjectDetailsViewModel) {
     ScrollableColumn {
         Box(modifier = Modifier.fillMaxWidth()) {
             HeaderImage(url = project.cover_picture_url)
-            ButtonLike(project, viewModel)
+
+            if (currentUser != null) {
+                ButtonLike(project, viewModel)
+            }
         }
 
         CardProjectDetails(project)
@@ -111,10 +112,10 @@ fun OwnerActionsButton(project: Project, viewModel: ProjectDetailsViewModel) {
     )
 
     ListGroup(modifier = Modifier.padding(start = 32.dp, end = 32.dp)) {
-        ListItem(onClick = { navigator.navigate(Destination.EditProject(projectId = project.id)) }) {
+        ListItemWithArrow(onClick = { navigator.navigate(Destination.EditProject(projectId = project.id)) }) {
             Text("Edit project")
         }
-        ListItem(onClick = { openConfirmDialog.value = true }) {
+        ListItemWithArrow(onClick = { openConfirmDialog.value = true }) {
             if (deleteState is ViewStateAction.Loading) {
                 CircularProgressIndicator()
             } else {
