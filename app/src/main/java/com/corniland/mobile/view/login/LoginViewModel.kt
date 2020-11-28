@@ -4,27 +4,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.corniland.mobile.data.repository.UserRepository
+import com.corniland.mobile.view.utils.ViewStateAction
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-sealed class LoginViewState {
-    object Idle : LoginViewState()
-    object Loading : LoginViewState()
-    object FailedLogin : LoginViewState()
-    object SuccessLogin : LoginViewState()
-}
-
 class LoginViewModel(var repository: UserRepository) : ViewModel() {
 
-    val state: MutableLiveData<LoginViewState> = MutableLiveData(LoginViewState.Idle)
+    val state: MutableLiveData<ViewStateAction> = MutableLiveData(ViewStateAction.Idle)
 
     fun performLogin(email: String, password: String) {
         viewModelScope.launch {
-            state.postValue(LoginViewState.Loading)
+            state.postValue(ViewStateAction.Loading)
             repository.login(email, password)
-                .catch { state.postValue(LoginViewState.FailedLogin) }
-                .collect { state.postValue(if (it) LoginViewState.SuccessLogin else LoginViewState.FailedLogin) }
+                .catch { state.postValue(ViewStateAction.Failed) }
+                .collect { state.postValue(if (it) ViewStateAction.Success else ViewStateAction.Failed) }
         }
     }
 

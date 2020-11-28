@@ -18,6 +18,7 @@ import com.corniland.mobile.view.main.Destination
 import com.corniland.mobile.data.model.Project
 import com.corniland.mobile.view.theme.CornilandTheme
 import com.corniland.mobile.view.utils.HorizontalRuler
+import com.corniland.mobile.view.utils.ImageLoadFailed
 import com.corniland.mobile.view.utils.ImageLoading
 import com.corniland.mobile.view.utils.NavigatorAmbient
 import com.skydoves.landscapist.glide.GlideImage
@@ -76,9 +77,7 @@ private fun ProjectImage(project: Project) {
             contentScale = ContentScale.Crop,
             modifier = Modifier.size(width = 112.dp, height = 64.dp),
             loading = { ImageLoading() },
-            failure = {
-                Text("Failed to load the image")
-            }
+            failure = { ImageLoadFailed() }
         )
     }
 }
@@ -122,8 +121,6 @@ fun Image(url: String, modifier: Modifier = Modifier) {
             .heightIn(max = 192.dp)
             .fillMaxWidth(),
         loading = { ImageLoading() },
-        failure = {
-            Text("Failed to load the image")
-        }
+        failure = { ImageLoadFailed() }
     )
 }

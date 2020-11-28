@@ -21,16 +21,20 @@ class SessionManager @Inject constructor(val repositories: Repositories) {
     val state: MutableLiveData<User?> = MutableLiveData(null)
 
     init {
-        updateCurrentUser()
+        updateCurrentUserInBackground()
     }
 
-    fun updateCurrentUser() {
+    fun updateCurrentUserInBackground() {
         CoroutineScope(Dispatchers.IO).launch {
-            repositories.user.whoami()
-                .collect {
-                    state.postValue(it)
-                }
+            updateCurrentUser()
         }
+    }
+
+    suspend fun updateCurrentUser() {
+        repositories.user.whoami()
+            .collect {
+                state.postValue(it)
+            }
     }
 
     fun logout() {

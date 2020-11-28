@@ -9,7 +9,7 @@ data class Project(
     val cover_picture_url: String,
     val published: Boolean,
     val owner: String,
-    val members: List<String>,
+    val members: List<String> = listOf(),
     val likes: Int
 ) {
     companion object {
@@ -30,3 +30,16 @@ data class Project(
         )
     }
 }
+
+data class CreateProjectRequest(
+    var title: String
+)
+
+data class UpdateProjectRequest(
+    var title: String,
+    var short_description: String,
+    var description: String,
+    var status: String,
+    var cover_picture_url: String,
+    var published: Boolean
+)

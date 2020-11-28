@@ -2,6 +2,7 @@ package com.corniland.mobile.view.login
 
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
@@ -26,6 +27,7 @@ import com.corniland.mobile.view.main.Destination
 import com.corniland.mobile.data.repository.RepositoriesAmbient
 import com.corniland.mobile.view.theme.CornilandTheme
 import com.corniland.mobile.view.utils.NavigatorAmbient
+import com.corniland.mobile.view.utils.ViewStateAction
 
 @Composable
 fun Login() {
@@ -36,12 +38,12 @@ fun Login() {
 
     val email = remember { mutableStateOf(TextFieldValue()) }
     val password = remember { mutableStateOf(TextFieldValue()) }
-    val loginState = viewModel.state.observeAsState(LoginViewState.Idle).value
+    val loginState = viewModel.state.observeAsState(ViewStateAction.Idle).value
 
-    if (loginState is LoginViewState.SuccessLogin) {
-        sessionManager.updateCurrentUser()
+    if (loginState is ViewStateAction.Success) {
+        sessionManager.updateCurrentUserInBackground()
         Handler(Looper.getMainLooper()).postDelayed(
-            { navigator.navigate(Destination.ProjectBrowser) },
+            { navigator.navigate(Destination.ProjectBrowser()) },
             1000
         )
     }
@@ -60,7 +62,7 @@ fun Login() {
             modifier = Modifier.padding(top = 48.dp, bottom = 8.dp)
         )
 
-        if (loginState is LoginViewState.FailedLogin) {
+        if (loginState is ViewStateAction.Failed) {
             Text(
                 "Failed to login",
                 color = CornilandTheme.colors.error,
@@ -86,8 +88,8 @@ fun Login() {
 
         Crossfade(current = loginState) {
             when (loginState) {
-                LoginViewState.Idle,
-                LoginViewState.FailedLogin ->
+                ViewStateAction.Idle,
+                ViewStateAction.Failed ->
                     Button(
                         onClick = {
                             viewModel.performLogin(
@@ -95,14 +97,14 @@ fun Login() {
                                 password = password.value.text
                             )
                         },
-                        enabled = loginState is LoginViewState.Idle || loginState is LoginViewState.FailedLogin,
+                        enabled = loginState is ViewStateAction.Idle || loginState is ViewStateAction.Failed,
                         modifier = Modifier.padding(top = 16.dp),
                     ) {
                         Text("Login")
                     }
 
-                LoginViewState.Loading -> CircularProgressIndicator(Modifier.padding(24.dp))
-                LoginViewState.SuccessLogin -> Icon(
+                ViewStateAction.Loading -> CircularProgressIndicator(Modifier.padding(24.dp))
+                ViewStateAction.Success -> Icon(
                     modifier = Modifier.padding(24.dp),
                     asset = Icons.Default.Check
                 )

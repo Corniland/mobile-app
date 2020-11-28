@@ -10,7 +10,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class UserProfileViewModel(
+
+class UserLineViewModel(
     var repository: UserRepository,
     userId: String
 ) : ViewModel() {

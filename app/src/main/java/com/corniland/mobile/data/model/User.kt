@@ -1,5 +1,9 @@
 package com.corniland.mobile.data.model
 
+import android.util.Log
+import androidx.compose.ui.graphics.Color
+import kotlin.math.abs
+
 data class User(
     val id: String,
     val email: String,
@@ -17,6 +21,16 @@ data class User(
             private_profile = false,
             banned = false,
         )
+
+        private val possiblesColors = listOf(
+            Color.Red, Color.Blue, Color.Yellow,
+            Color.LightGray, Color.Green, Color.Cyan,
+            Color.Magenta, Color.Gray
+        )
+
+        fun getColorFor(userId: String): Color {
+            return possiblesColors[abs(userId.hashCode()) % possiblesColors.count()]
+        }
     }
 }
 

@@ -7,17 +7,38 @@ import retrofit2.http.*
 
 interface CornilandAPI {
 
+    // User
+
     @GET("api/users/{id}")
     suspend fun getUser(@Path("id") id: String): Response<User>
 
     @PUT("api/users/me")
     suspend fun updateSettings(@Body body: UpdateSettingsRequest): Response<User>
 
+    // Project
+
     @GET("api/projects")
     suspend fun getAllProjects(): Response<List<Project>>
 
     @GET("api/projects/{id}")
     suspend fun getProject(@Path("id") id: String): Response<Project>
+
+    @POST("api/projects/{id}/like")
+    suspend fun likeProject(@Path("id") id: String): Response<Unit>
+
+    @DELETE("api/projects/{id}/like")
+    suspend fun unlikeProject(@Path("id") id: String): Response<Unit>
+
+    @POST("api/projects")
+    suspend fun createProject(@Body body: CreateProjectRequest): Response<Project>
+
+    @PUT("api/projects/{id}")
+    suspend fun updateProject(@Path("id") id: String, @Body body: UpdateProjectRequest): Response<Project>
+
+    @DELETE("api/projects/{id}")
+    suspend fun deleteProject(@Path("id") id: String): Response<Unit>
+
+    // Auth
 
     @POST("auth/user/login")
     suspend fun login(@Body body: LoginRequest): Response<LoginResponse>

@@ -16,7 +16,6 @@ import com.corniland.mobile.data.SessionManager
 import com.corniland.mobile.data.SessionManagerAmbient
 import com.corniland.mobile.data.repository.Repositories
 import com.corniland.mobile.data.repository.RepositoriesAmbient
-import com.corniland.mobile.view.Drawer
 import com.corniland.mobile.view.theme.CornilandTheme
 import com.corniland.mobile.view.utils.Navigator
 import com.corniland.mobile.view.utils.NavigatorAmbient
@@ -59,7 +58,7 @@ class MainActivity : AppCompatActivity() {
 fun CornilandApp(backDispatcher: OnBackPressedDispatcher) {
     val navigator: Navigator<Destination> =
         rememberSavedInstanceState(saver = Navigator.saver(backDispatcher)) {
-            Navigator(Destination.ProjectBrowser, backDispatcher)
+            Navigator(Destination.ProjectBrowser(), backDispatcher)
         }
 
     val scaffoldState = rememberScaffoldState()

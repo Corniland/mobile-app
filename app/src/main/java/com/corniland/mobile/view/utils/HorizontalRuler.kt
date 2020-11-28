@@ -13,9 +13,13 @@ import androidx.compose.ui.unit.dp
 import com.corniland.mobile.view.theme.CornilandTheme
 
 @Composable
-fun HorizontalRuler(color: Color = CornilandTheme.colors.secondary, width: Dp = 1.dp) {
+fun HorizontalRuler(
+    color: Color = CornilandTheme.colors.onSecondary,
+    width: Dp = 1.dp,
+    verticalPadding: Dp = 0.dp
+) {
     Surface(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = verticalPadding),
         color = color
     ) {
         Spacer(modifier = Modifier.height(width))

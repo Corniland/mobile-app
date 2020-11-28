@@ -1,4 +1,4 @@
-package com.corniland.mobile.view
+package com.corniland.mobile.view.main
 
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.corniland.mobile.data.SessionManagerAmbient
-import com.corniland.mobile.view.main.Destination
 import com.corniland.mobile.view.theme.CornilandTheme
+import com.corniland.mobile.view.utils.HorizontalRuler
 import com.corniland.mobile.view.utils.NavigatorAmbient
 
 @Composable
@@ -56,27 +56,42 @@ fun Drawer(drawerState: DrawerState) {
             }
 
             Column {
-                MenuItem(destination = Destination.ProjectBrowser) { MenuTitle(name = "Browse") }
-                /*HorizontalRuler()
-                MenuItem("My project")
-                HorizontalRuler()
-                MenuItem("My profile")*/
-            }
+                MenuItem(destination = Destination.ProjectBrowser()) { MenuTitle(name = "Browse") }
 
-            Column(
-                verticalArrangement = Arrangement.Bottom,
-                modifier = Modifier.fillMaxHeight().padding(bottom = 64.dp)
-            ) {
-                currentUser?.let {
-                    MenuItem(onClick = {
-                        session.logout()
-                        navigator.navigate(Destination.Login)
-                    }) {
-                        MenuTitle(name = "Logout")
+                currentUser?.let { user ->
+                    HorizontalRuler(verticalPadding = 8.dp)
+
+                    MenuItem(
+                        destination = Destination.ProjectBrowser(
+                            title = "Favourite project of ${user.username}",
+                            byOwner = user.id
+                        )
+                    ) {
+                        MenuTitle("My project")
                     }
-                } ?: run {
-                    MenuItem(destination = Destination.Login) { MenuTitle(name = "Login") }
+
+                    HorizontalRuler(verticalPadding = 8.dp)
+
+                    MenuItem(destination = Destination.CurrentUserProfile) {
+                        MenuTitle("My profile")
+                    }
                 }
+            }
+        }
+
+        Column(
+            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier.fillMaxHeight().padding(bottom = 64.dp)
+        ) {
+            currentUser?.let {
+                MenuItem(onClick = {
+                    session.logout()
+                    navigator.navigate(Destination.Login)
+                }) {
+                    MenuTitle(name = "Logout")
+                }
+            } ?: run {
+                MenuItem(destination = Destination.Login) { MenuTitle(name = "Login") }
             }
         }
     }

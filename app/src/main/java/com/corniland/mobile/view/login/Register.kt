@@ -30,12 +30,13 @@ import com.corniland.mobile.view.main.Destination
 import com.corniland.mobile.data.repository.RepositoriesAmbient
 import com.corniland.mobile.view.theme.CornilandTheme
 import com.corniland.mobile.view.utils.NavigatorAmbient
+import com.corniland.mobile.view.utils.ViewStateAction
 
 @Composable
 fun Register() {
     val repository = RepositoriesAmbient.current.user
     val viewModel = remember { RegisterViewModel(repository = repository) }
-    val registerState = viewModel.state.observeAsState(LoginViewState.Idle).value
+    val registerState = viewModel.state.observeAsState(ViewStateAction.Idle).value
     val navigator = NavigatorAmbient.current
 
     val email = remember { mutableStateOf(TextFieldValue()) }
@@ -50,10 +51,10 @@ fun Register() {
         password.value.text.isNotBlank() &&
         passwordRepeat.value.text.isNotBlank() &&
         passwordMatch() &&
-        (registerState is RegisterViewState.Idle || registerState is RegisterViewState.FailedRegister)
+        (registerState is ViewStateAction.Idle || registerState is ViewStateAction.Failed)
     }
 
-    if (registerState is RegisterViewState.SuccessRegister) {
+    if (registerState is ViewStateAction.Success) {
         // Send the user to home once he's registered, 1sec delay to show the checkmark for the success
         Handler(Looper.getMainLooper()).postDelayed({ navigator.navigate(Destination.Login) }, 1000)
     }
@@ -72,7 +73,7 @@ fun Register() {
             modifier = Modifier.padding(top = 48.dp, bottom = 8.dp)
         )
 
-        if (registerState is RegisterViewState.FailedRegister) {
+        if (registerState is ViewStateAction.Failed) {
             Text(
                 "Failed to register",
                 color = CornilandTheme.colors.error,
@@ -113,8 +114,8 @@ fun Register() {
         )
 
         when (registerState) {
-            is RegisterViewState.FailedRegister,
-            is RegisterViewState.Idle -> {
+            is ViewStateAction.Failed,
+            is ViewStateAction.Idle -> {
                 Button(
                     onClick = {
                         viewModel.performRegister(
@@ -130,8 +131,8 @@ fun Register() {
                 }
             }
 
-            is RegisterViewState.Loading -> CircularProgressIndicator(Modifier.padding(24.dp))
-            is RegisterViewState.SuccessRegister -> Icon(
+            is ViewStateAction.Loading -> CircularProgressIndicator(Modifier.padding(24.dp))
+            is ViewStateAction.Success -> Icon(
                 modifier = Modifier.padding(24.dp),
                 asset = Icons.Default.Check
             )

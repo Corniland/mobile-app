@@ -2,13 +2,11 @@ package com.corniland.mobile.view.user
 
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Switch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
@@ -26,6 +24,8 @@ import com.corniland.mobile.data.SessionManagerAmbient
 import com.corniland.mobile.data.model.User
 import com.corniland.mobile.data.repository.RepositoriesAmbient
 import com.corniland.mobile.view.theme.CornilandTheme
+import com.corniland.mobile.view.utils.SwitchWithLabel
+import com.corniland.mobile.view.utils.ViewStateAction
 
 @Composable
 fun UserSettings() {
@@ -43,7 +43,7 @@ fun UserSettings() {
 private fun UserSettingsPage(user: User) {
     val repository = RepositoriesAmbient.current.user
     val viewModel = remember { UserSettingsViewModel(repository = repository) }
-    val updateState = viewModel.state.observeAsState(UserSettingsViewState.Idle).value
+    val updateState = viewModel.state.observeAsState(ViewStateAction.Idle).value
 
     val username = remember { mutableStateOf(TextFieldValue(user.username)) }
     val newPassword = remember { mutableStateOf(TextFieldValue()) }
@@ -51,7 +51,7 @@ private fun UserSettingsPage(user: User) {
     val privateProfile = remember { mutableStateOf(user.private_profile) }
 
     val passwordMatch = { newPassword.value.text == newPasswordConfirm.value.text }
-    val updateButtonEnabled = { passwordMatch() && updateState !is UserSettingsViewState.Loading }
+    val updateButtonEnabled = { passwordMatch() && updateState !is ViewStateAction.Loading }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -66,7 +66,7 @@ private fun UserSettingsPage(user: User) {
             modifier = Modifier.padding(top = 48.dp, bottom = 8.dp)
         )
 
-        if (updateState is UserSettingsViewState.Failed) {
+        if (updateState is ViewStateAction.Failed) {
             Text(
                 "Failed to update settings",
                 color = CornilandTheme.colors.error,
@@ -75,10 +75,9 @@ private fun UserSettingsPage(user: User) {
             )
         }
 
-        if (updateState is UserSettingsViewState.Success) {
+        if (updateState is ViewStateAction.Success) {
             Text(
                 "Successfully updated the settings",
-                color = CornilandTheme.colors.error,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(8.dp)
             )
@@ -107,9 +106,15 @@ private fun UserSettingsPage(user: User) {
             isErrorValue = !passwordMatch() && newPasswordConfirm.value.text != "",
         )
 
+        SwitchWithLabel(
+            label = "Private profile",
+            checked = privateProfile.value,
+            onCheckedChange = { privateProfile.value = it }
+        )
+
         when (updateState) {
-            is UserSettingsViewState.Failed,
-            is UserSettingsViewState.Idle -> {
+            is ViewStateAction.Failed,
+            is ViewStateAction.Idle -> {
                 Button(
                     onClick = {
                         viewModel.updateSettings(
@@ -125,8 +130,8 @@ private fun UserSettingsPage(user: User) {
                 }
             }
 
-            is UserSettingsViewState.Loading -> CircularProgressIndicator(Modifier.padding(24.dp))
-            is UserSettingsViewState.Success -> Icon(
+            is ViewStateAction.Loading -> CircularProgressIndicator(Modifier.padding(24.dp))
+            is ViewStateAction.Success -> Icon(
                 modifier = Modifier.padding(24.dp),
                 asset = Icons.Default.Check
             )
